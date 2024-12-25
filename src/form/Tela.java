@@ -33,6 +33,28 @@ public class Tela extends javax.swing.JFrame {
         
     }
     
+    private String Number(int num, int max){
+        
+        String txt = "";
+        
+        if(num < 10 && max >= 10){
+            txt += "0";
+        }
+        
+        if(num < 100 && max >= 100){
+            txt += "0";
+        }
+        
+        if(num < 1000 && max >= 1000){
+            txt += "0";
+        }
+        
+        txt += num;
+        
+        return txt;
+        
+    }
+    
     private void Converter(String file){
         
         String ouput = file.substring(0, file.lastIndexOf("\\")+1);
@@ -44,10 +66,12 @@ public class Tela extends javax.swing.JFrame {
             
             csv orm = new csv(file);
             
+            int max_track = 0;
+            
             String htm = "<html>\n<head>\n<title>";
             htm += name;
             htm += "</title>\n";
-            htm += "<meta charset=\"utf-8\" />";
+            htm += "<meta charset=\"utf-8\" />\n";
             htm += "</head>\n";
             htm += "<body style=\"background-color:black;\">\n";
             
@@ -57,9 +81,11 @@ public class Tela extends javax.swing.JFrame {
                     
                     if(orm.Tot(x) >= 0){
                         
-                        cod tx = new cod();
+                        Numero track = new Numero(orm.Read(x, 3));
                         
-                        tx.toInteger(orm.Read(x, 3));
+                        if(track.Num() > max_track){
+                            max_track = track.Num();
+                        }
                         
                         htm += "<div style=\"overflow-x:visible;";
                         
@@ -81,41 +107,36 @@ public class Tela extends javax.swing.JFrame {
                             
                         }//if(x > 0)
                         
-                        if(tx.Int() < 10){
-                            
-                            htm += "<p style=\"color:darkcyan;";
-                            htm += "font-size:15vw;font-weight:bold;";
-                            htm += "text-align:center;";
-                            htm += "letter-spacing:2vw;\">00";
-                            htm += tx.Int();
-                            htm += "</p>";
-                            
-                        } else if(tx.Int() < 100){
-                            
-                            htm += "<p style=\"color:darkcyan;";
-                            htm += "font-size:15vw;font-weight:bold;";
-                            htm += "text-align:center;";
-                            htm += "letter-spacing:2vw;\">0";
-                            htm += tx.Int();
-                            htm += "</p>";
-                            
-                        } else if(tx.Int() < 1000){
+                        if(track.Val() && track.Num() > 0){
                             
                             htm += "<p style=\"color:darkcyan;";
                             htm += "font-size:15vw;font-weight:bold;";
                             htm += "text-align:center;";
                             htm += "letter-spacing:2vw;\">";
-                            htm += tx.Int();
+                            
+                            if(track.Num() < 10){
+                                
+                                htm += "00";
+                                htm += track.Num();
+                                
+                            } else if(track.Num() < 100){
+                                
+                                htm += "0";
+                                htm += track.Num();
+                                
+                            } else if(track.Num() < 1000){
+                                
+                                htm += track.Num();
+                                
+                            } else {
+                                
+                                htm += "+999";
+                                
+                            }//if(track.Num() < 10)
+                            
                             htm += "</p>";
                             
-                        } else {
-                            
-                            htm += "<p style=\"color:darkcyan;";
-                            htm += "font-size:15vw;font-weight:bold;";
-                            htm += "text-align:center;";
-                            htm += "letter-spacing:2vw;\">---</p>";
-                            
-                        }//if(tx.Int() < 10)
+                        }//if(track.Val() && track.Num() < 1000)
                         
                         htm += "<div style=\"width:100%;height:5%;";
                         htm += "background-color:darkcyan;margin-top:10%;";
@@ -174,23 +195,27 @@ public class Tela extends javax.swing.JFrame {
             
             if(orm.Tot() >= 0){
                 
-                htm += "\n\n<!-- ";
+                htm += "\n\n<!-- Arquivo \"";
                 htm += name;
-                htm += " --";
+                htm += "\" --";
                 
                 for(int i = 0; i < orm.Tot(); i++){
                     
                     htm += "\n";
-
-                    if(orm.Read(i, 10).isBlank()){
+                    
+                    Numero track = new Numero(orm.Read(i, 3));
+                    
+                    if(track.Num() > 0 && track.Num() < 1000){
                         
-                        htm += "SOUND";
+                        htm += "Faixa ";
+                        
+                        htm += Number(track.Num(),max_track);
 
-                    } else {
+                    } else {//if(track.Num() > 0 && track.Num() < 1000)
                         
                         htm += orm.Read(i, 10);
                         
-                    }
+                    }//if(track.Num() > 0 && track.Num() < 1000)
                     
                     htm += ";";
 
@@ -220,11 +245,14 @@ public class Tela extends javax.swing.JFrame {
                     
                 }//for(int i = 0; i < orm.Tot(); i++)
                 
+                htm += "\n";
+                
             }//if(orm.Tot() >= 0) - 2
             
-            cod dg = new cod();
+            Data d = new Data();
+            Hora h = new Hora();
             
-            html export = new html(ouput + name + "_" + dg.Date(false) + "_" + dg.Time(false),htm);
+            html export = new html(ouput + name + "_" + d.Load() + "_" + h.Load(),htm);
             
             System.out.println(aply ? export.Export() : export.Ready("\n"));
             
