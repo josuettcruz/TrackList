@@ -4,6 +4,7 @@
  */
 package file;
 
+import static java.lang.Math.round;
 import java.time.LocalTime;
 
 /**
@@ -15,9 +16,15 @@ public class Hora {
     private LocalTime hora;
     private String error;
     
-    public Hora(){
-        this.hora = LocalTime.of(0, 0, 0);
-    }
+    public Hora(boolean now){
+        
+        if(now){
+            this.hora = LocalTime.now();
+        } else {
+            this.hora = LocalTime.of(0, 0, 0);
+        }
+        
+    }//Hora(boolean now)
     
     public Hora(LocalTime hora){
         this.hora = hora;
