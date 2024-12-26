@@ -23,7 +23,9 @@ public class Tela extends javax.swing.JFrame {
         
         initComponents();
         setVisible(true);
+        setTitle("Hoje é " + new Data().DataCompleta(true) + "!");
         setLocation(300,150);
+        setResizable(false);
         
     }
     
@@ -128,52 +130,55 @@ public class Tela extends javax.swing.JFrame {
                             htm += "\"></div>";
                             
                         }//if(x > 0)
-                        
-                        if(track.Val() && track.Num() > 0){
+
+                        boolean vld = track.Val() && track.Num() > 0;
+                        boolean track_max = vld && track.Num() < 1000;
                             
-                            htm += "<p style=\"color:darkcyan;";
-                            
-                            if(track.Num() < 1000){
-                                htm += "font-size:20vw;";
-                            } else {
-                                htm += "font-size:10vw;";
-                            }
-                            
-                            htm += "font-weight:bold;";
-                            
-                            htm += "text-align:center;";
-                            
-                            if(track.Num() < 1000){
-                                htm += "letter-spacing:10vw;";
-                            } else {
-                                htm += "letter-spacing:5vw;";
-                            }
-                            
-                            htm += "\">";
-                            
-                            if(track.Num() < 10){
-                                
-                                htm += "00";
-                                htm += track.Num();
-                                
-                            } else if(track.Num() < 100){
-                                
-                                htm += "0";
-                                htm += track.Num();
-                                
-                            } else if(track.Num() < 1000){
-                                
-                                htm += track.Num();
-                                
-                            } else {
-                                
-                                htm += "+999";
-                                
-                            }//if(track.Num() < 10)
+                        htm += "<p style=\"color:darkcyan;";
+
+                        if(track_max){
+                            htm += "font-size:20vw;";
+                        } else {
+                            htm += "font-size:15vw;";
+                        }
+
+                        htm += "font-weight:bold;";
+
+                        htm += "text-align:center;";
+
+                        if(track_max){
+                            htm += "letter-spacing:15vw;";
+                        } else {
+                            htm += "letter-spacing:10vw;";
+                        }
+
+                        htm += "\">";
+
+                        if(track.Num() < 10 && vld){
+
+                            htm += "00";
+                            htm += track.Num();
+
+                        } else if(track.Num() < 100 && vld){
+
+                            htm += "0";
+                            htm += track.Num();
+
+                        } else if(track.Num() < 1000 && vld){
+
+                            htm += track.Num();
+
+                        } else if(vld){
+
+                            htm += "+999";
+
+                        } else {
+
+                            htm += "---";
+
+                        }//if(track.Num() < 10)
                             
                         htm += "</p>";
-                            
-                        }//if(track.Val() && track.Num() < 1000)
                         
                         if(!orm.Read(x, 0).isBlank()){
                             
@@ -195,9 +200,10 @@ public class Tela extends javax.swing.JFrame {
                             htm += "background-color:darkcyan;margin-top:10%;";
                             htm += "\"></div>";
                             htm += "<p style=\"margin-top:10%;";
-                            htm += "font-size:calc(10px + 3vw);";
+                            htm += "font-size:4vw;";
                             htm += "color:darkcyan;text-align:center;";
-                            htm += "font-weight:500;\">Artista<br/>Desconhecido</p>";
+                            htm += "font-weight:normal;\">";
+                            htm += "Artista<br/>Desconhecido</p>";
                             
                         } else {//if(orm.Read(x, 1).isBlank())
                             
@@ -207,7 +213,7 @@ public class Tela extends javax.swing.JFrame {
                             htm += "<p style=\"margin-top:10%;";
                             htm += "font-size:calc(10px + 3vw);";
                             htm += "color:white;text-align:center;";
-                            htm += "font-weight:500;\">";
+                            htm += "font-weight:bold;\">";
                             htm += Registro.Title(orm.Read(x, 1),"<br/>");
                             htm += "</p>";
                             
@@ -223,54 +229,9 @@ public class Tela extends javax.swing.JFrame {
                         
                         Numero temp_track = new Numero(orm.Read(x, 6));
                         
-                        Hora temp = new Hora(temp_track.Num());
+                        Hora temp = new Hora(temp_track.Num(), false);
                         
-                        int ht = temp.getHora().getHour();
-                        int mt = temp.getHora().getMinute();
-                        int st = temp.getHora().getSecond();
-                        
-                        if(ht > 0){
-                            
-                            htm += ht;
-                            htm += " hora";
-                            
-                            if(ht > 1){
-                                htm += "s";
-                            }
-                            
-                            if(st == 0){
-                                htm += " e ";
-                            } else {
-                                htm += ", ";
-                            }
-                            
-                        }//if(ht > 0)
-                        
-                        if(mt > 0){
-                            
-                            htm += mt;
-                            htm += " minuto";
-                            
-                            if(mt > 1){
-                                htm += "s";
-                            }
-                            
-                        }//if(mt > 0)
-                        
-                        if(st > 0){
-                            
-                            if(ht > 0 || mt > 0){
-                                htm += " e ";
-                            }
-                            
-                            htm += st;
-                            htm += " segundo";
-                            
-                            if(st > 1){
-                                htm += "s";
-                            }
-                            
-                        }//if(st > 0)
+                        htm += temp.getNodeHora(true);
                         
                         htm += "</p>";
                         
@@ -296,7 +257,8 @@ public class Tela extends javax.swing.JFrame {
                 
             } else {//if(orm.Tot() >= 0)
                 
-                htm += "<p style=\"margin-left:10%;font-size:calc(10px + 1vw);color:white;\">";
+                htm += "<p style=\"margin-left:10%;";
+                htm += "font-size:calc(10px + 1vw);color:white;\">";
                 htm += file;
                 htm += "</p>";
                 
@@ -321,9 +283,21 @@ public class Tela extends javax.swing.JFrame {
                     
                     if(track.Num() > 0 && track.Num() < 1000){
                         
+                        int arq_local;
+                        
+                        if(orm.Read(i, 10).contains(".")){
+                            arq_local = orm.Read(i, 10).indexOf(".");
+                        } else {
+                            arq_local = orm.Read(i, 10).length();
+                        }
+                        
                         htm += "Faixa ";
                         
                         htm += Number(track.Num(),max_track);
+                        
+                        htm += ";";
+                        
+                        htm += orm.Read(i, 10).substring(0, arq_local);
 
                     } else {//if(track.Num() > 0 && track.Num() < 1000)
                         
@@ -334,14 +308,26 @@ public class Tela extends javax.swing.JFrame {
                     htm += ";";
 
                     if(orm.Read(i, 0).isBlank()){
-
-                        htm += "Sem Título";
                         
-                    } else {
+                        String origin[] = orm.Read(i,8).split(" ");
+                        
+                        Data orn =  new Data(origin[0]);
+                        
+                        if(orn.Val()){
+                            
+                            htm += orn.DataCompleta(true);
+                            
+                        } else {//if(orn.Val())
+                            
+                            htm += "Sem Título";
+                            
+                        }//if(orn.Val())
+                        
+                    } else {//if(orm.Read(i, 0).isBlank())
 
                         htm += orm.Read(i, 0);
                         
-                    }
+                    }//if(orm.Read(i, 0).isBlank())
 
                     if(!orm.Read(i, 1).isBlank()){
                         
@@ -352,7 +338,7 @@ public class Tela extends javax.swing.JFrame {
                     
                     Numero number_track = new Numero(orm.Read(i, 6));
                     
-                    Hora duraction_track = new Hora(number_track.Num());
+                    Hora duraction_track = new Hora(number_track.Num(), false);
                     
                     if(number_track.Val() && number_track.Num() > 0){
                         

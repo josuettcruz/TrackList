@@ -168,6 +168,8 @@ public class Registro {
                 
                 String dote = "";
                 
+                boolean dao = true;
+                
                 for(int p = 0; p < document.get(x).length(); p++){
                     
                     switch(document.get(x).charAt(p)){
@@ -178,10 +180,17 @@ public class Registro {
                         case ']':
                         case ')':
                         case '}':
+                        if(p > 1){dote += " ";}
+                        dao = false;
+                        break;
+                        
+                        case ' ':
+                        if(p > 1 && dao){dote += " ";dao = false;}
                         break;
                         
                         default:
                         dote += document.get(x).charAt(p);
+                        dao = true;
                         break;
                         
                     }

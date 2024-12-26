@@ -4,7 +4,6 @@
  */
 package file;
 
-import static java.lang.Math.round;
 import java.time.LocalTime;
 
 /**
@@ -16,6 +15,16 @@ public class Hora {
     private LocalTime hora;
     private String error;
     
+    private void Logico(){
+        
+        final String msg = "Possível inconcistência na exatidão da hora!";
+        this.error = msg;
+        System.out.println(msg);
+        // Line 044
+        // Line 568
+        
+    }//Logico() -- 09:05 26/12/2024
+    
     public Hora(LocalTime hora){
         this.hora = hora;
     }
@@ -23,14 +32,20 @@ public class Hora {
     public Hora(boolean now){
         
         if(now){
+            
             this.hora = LocalTime.now();
-        } else {
+            
+        } else {//if(now)
+            
             this.hora = LocalTime.of(0, 0, 0);
-        }
+            
+        }//if(now)
         
     }//Hora(boolean now)
     
-    public Hora(int timer){
+    public Hora(int timer, boolean print){
+        
+        if(print){Logico();}// 09:05 26/12/2024
         
         if(timer < 0){
             timer = timer - timer*2;
@@ -448,7 +463,115 @@ public class Hora {
         
         return txt;
         
-    }//Hora()
+    }//getHora(boolean second)
+    
+    private String getNodeHoraMinute(){
+        
+        String txt = "";
+
+        int ht = this.hora.getHour();
+        int mt = this.hora.getMinute();
+
+        if(ht > 0){
+
+            txt += ht;
+            txt += " hora";
+
+            if(ht > 1){
+                txt += "s";
+            }
+
+            if(mt == 0){
+                txt += " e ";
+            }
+
+        }//if(ht > 0)
+
+        if(mt > 0){
+
+            txt += mt;
+            txt += " minuto";
+
+            if(mt > 1){
+                txt += "s";
+            }
+
+        }//if(mt > 0)
+        
+        return txt;
+        
+    }//getNodeHoraMinute()
+    
+    private String getNodeHoraSecond(){
+        
+        String txt = "";
+
+        int ht = this.hora.getHour();
+        int mt = this.hora.getMinute();
+        int st = this.hora.getSecond();
+
+        if(ht > 0){
+
+            txt += ht;
+            txt += " hora";
+
+            if(ht > 1){
+                txt += "s";
+            }
+            
+            if(mt > 0 || st > 0){
+                
+                if(st == 0){
+                    
+                    txt += " e ";
+                    
+                } else {//if(st == 0)
+                    
+                    txt += ", ";
+                    
+                }//if(st == 0)
+                
+            }//if(mt > 0 || st > 0)
+
+        }//if(ht > 0)
+
+        if(mt > 0){
+
+            txt += mt;
+            txt += " minuto";
+
+            if(mt > 1){
+                txt += "s";
+            }
+
+        }//if(mt > 0)
+
+        if(st > 0){
+
+            if(ht > 0 || mt > 0){
+                txt += " e ";
+            }
+
+            txt += st;
+            txt += " segundo";
+
+            if(st > 1){
+                txt += "s";
+            }
+
+        }//if(st > 0)
+        
+        return txt;
+        
+    }//getNodeHoraSecond()
+    
+    public String getNodeHora(boolean second){
+        
+        Logico();
+        
+        return second ? getNodeHoraSecond() : getNodeHoraMinute();
+        
+    }//getNodeHora(boolean second)
     
     public String Load(){
         
@@ -482,6 +605,6 @@ public class Hora {
         
         return txt;
         
-    }
+    }//Load()
     
 }
