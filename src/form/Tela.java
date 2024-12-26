@@ -92,7 +92,7 @@ public class Tela extends javax.swing.JFrame {
                         if(orm.Read(x, 0).isBlank()){
                             htm += orm.Read(x, 10);
                         } else {
-                            htm += Registro.Select(orm.Read(x, 0),50);
+                            htm += Registro.Select(orm.Read(x, 0),orm.Read(x, 1).isBlank() ? 60 : 30);
                         }
                         
                         htm += "\"";
@@ -103,9 +103,9 @@ public class Tela extends javax.swing.JFrame {
                             
                         } else {
                             
-                            htm += " -- ";
-                            htm += Registro.Select(orm.Read(x, 1), 50);
-                            htm += " -->\n";
+                            htm += " -- \"";
+                            htm += Registro.Select(orm.Read(x, 1), 40);
+                            htm += "\" -->\n";
                             
                         }
                         
@@ -175,40 +175,16 @@ public class Tela extends javax.swing.JFrame {
                             
                         }//if(track.Val() && track.Num() < 1000)
                         
-                        /*htm += "<div style=\"width:100%;height:5%;";
-                        htm += "background-color:darkcyan;margin-top:10%;";
-                        htm += "\"></div>";
-                        htm += "<p style=\"margin-top:10%;";
-                        htm += "font-size:calc(10px + 3vw);";
-                        htm += "text-align:center;color:white;";
-                        htm += "font-weight:900;\">";
-                        if(orm.Read(x, 0).isBlank()){
-                            htm += "Sem Título";
-                        } else {
-                            htm += Registro.Title(orm.Read(x, 0));
-                        }
-                        htm += "</p>";*/
-                        
-                        if(orm.Read(x, 0).isBlank()){
+                        if(!orm.Read(x, 0).isBlank()){
                             
                             htm += "<div style=\"width:100%;height:5%;";
                             htm += "background-color:darkcyan;margin-top:10%;";
                             htm += "\"></div>";
                             htm += "<p style=\"margin-top:10%;";
                             htm += "font-size:calc(10px + 3vw);";
-                            htm += "color:darkcyan;text-align:center;";
-                            htm += "font-weight:500;\">Artista<br/>Desconhecido</p>";
-                            
-                        } else {//if(orm.Read(x, 0).isBlank())
-                            
-                            htm += "<div style=\"width:100%;height:5%;";
-                            htm += "background-color:darkcyan;margin-top:10%;";
-                            htm += "\"></div>";
-                            htm += "<p style=\"margin-top:10%;";
-                            htm += "font-size:calc(10px + 3vw);";
-                            htm += "color:white;text-align:center;";
-                            htm += "font-weight:500;\">";
-                            htm += Registro.Title(orm.Read(x, 0),"<br/>");
+                            htm += "text-align:center;color:white;";
+                            htm += "font-weight:900;\">";
+                            htm += Registro.Select(orm.Read(x, 0),25);
                             htm += "</p>";
                             
                         }//if(orm.Read(x, 0).isBlank())
@@ -236,6 +212,67 @@ public class Tela extends javax.swing.JFrame {
                             htm += "</p>";
                             
                         }//if(orm.Read(x, 1).isBlank())
+                        
+                        htm += "<div style=\"width:100%;height:5%;";
+                        htm += "background-color:darkcyan;margin-top:10%;";
+                        htm += "\"></div>";
+                        htm += "<p style=\"margin-top:10%;";
+                        htm += "font-size:calc(10px + 3vw);";
+                        htm += "text-align:center;color:white;";
+                        htm += "font-weight:900;\">";
+                        
+                        Numero temp_track = new Numero(orm.Read(x, 6));
+                        
+                        Hora temp = new Hora(temp_track.Num());
+                        
+                        int ht = temp.getHora().getHour();
+                        int mt = temp.getHora().getMinute();
+                        int st = temp.getHora().getSecond();
+                        
+                        if(ht > 0){
+                            
+                            htm += ht;
+                            htm += " hora";
+                            
+                            if(ht > 1){
+                                htm += "s";
+                            }
+                            
+                            if(st == 0){
+                                htm += " e ";
+                            } else {
+                                htm += ", ";
+                            }
+                            
+                        }//if(ht > 0)
+                        
+                        if(mt > 0){
+                            
+                            htm += mt;
+                            htm += " minuto";
+                            
+                            if(mt > 1){
+                                htm += "s";
+                            }
+                            
+                        }//if(mt > 0)
+                        
+                        if(st > 0){
+                            
+                            if(ht > 0 || mt > 0){
+                                htm += " e ";
+                            }
+                            
+                            htm += st;
+                            htm += " segundo";
+                            
+                            if(st > 1){
+                                htm += "s";
+                            }
+                            
+                        }//if(st > 0)
+                        
+                        htm += "</p>";
                         
                         htm += "</div>";
                         
@@ -274,6 +311,8 @@ public class Tela extends javax.swing.JFrame {
                 htm += name;
                 htm += "\" --";
                 
+                String indo = "";
+                
                 for(int i = 0; i < orm.Tot(); i++){
                     
                     htm += "\n";
@@ -310,11 +349,23 @@ public class Tela extends javax.swing.JFrame {
                         htm += orm.Read(i, 1);
 
                     }//if(!orm.Read(i, 1).isBlank())
+                    
+                    Numero number_track = new Numero(orm.Read(i, 6));
+                    
+                    Hora duraction_track = new Hora(number_track.Num());
+                    
+                    if(number_track.Val() && number_track.Num() > 0){
+                        
+                        htm += ";";
+                        htm += duraction_track.getHora(true);
+                        
+                    }
 
-                    if(!orm.Read(i, 2).isBlank()){
+                    if(!orm.Read(i, 2).isBlank() && !orm.Read(i, 2).equalsIgnoreCase(indo)){
                         
                         htm += ";";
                         htm += orm.Read(i, 2);
+                        indo = orm.Read(i, 2);
 
                     }//if(!orm.Read(i, 2).isBlank())
                     

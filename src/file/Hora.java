@@ -16,6 +16,10 @@ public class Hora {
     private LocalTime hora;
     private String error;
     
+    public Hora(LocalTime hora){
+        this.hora = hora;
+    }
+    
     public Hora(boolean now){
         
         if(now){
@@ -26,9 +30,44 @@ public class Hora {
         
     }//Hora(boolean now)
     
-    public Hora(LocalTime hora){
-        this.hora = hora;
-    }
+    public Hora(int timer){
+        
+        if(timer < 0){
+            timer = timer - timer*2;
+        }
+        
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        
+        for(int z = 0; z <= timer; z++){
+            
+            if(second < 60){
+                
+                second++;
+                
+            } else {//if(second < 60)
+                
+                second = 0;
+                
+                if(minute < 60){
+                    
+                    minute++;
+                    
+                } else {//if(minute < 60)
+                    
+                    minute = 0;
+                    hour++;
+                    
+                }//if(minute < 60)
+                
+            }//if(second < 60)
+            
+        }//for(int z = 0; z <= timer; z++)
+        
+        this.hora = LocalTime.of(hour, minute, second);
+        
+    }//Hora(int timer)
     
     public Hora(String time){
         
@@ -395,7 +434,7 @@ public class Hora {
         
         if(second){
             
-            int s = this.hora.getMinute();
+            int s = this.hora.getSecond();
             
             txt += sep;
             

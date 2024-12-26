@@ -4,7 +4,6 @@
  */
 package file;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -234,10 +233,6 @@ public class Registro {
         return txt;
         
     }//Title(String text)
-    
-    public static String Title(String text){
-        return Registro.Title(text, "");
-    }
     
     /*public static String Select(String text, String opc, int max){
         
