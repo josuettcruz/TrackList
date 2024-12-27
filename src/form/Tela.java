@@ -6,6 +6,9 @@ package form;
 
 import file.*;
 import java.awt.HeadlessException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -126,7 +129,7 @@ public class Tela extends javax.swing.JFrame {
                         if(x > 0){
                             
                             htm += "<div style=\"width:100%;height:10%;";
-                            htm += "background-color:darkcyan;margin-top:10%;";
+                            htm += "background-color:darkcyan;margin-top:5%";
                             htm += "\"></div>";
                             
                         }//if(x > 0)
@@ -137,20 +140,14 @@ public class Tela extends javax.swing.JFrame {
                         htm += "<p style=\"color:darkcyan;";
 
                         if(track_max){
-                            htm += "font-size:20vw;";
+                            htm += "font-size:10vw;";
                         } else {
-                            htm += "font-size:15vw;";
+                            htm += "font-size:8vw;";
                         }
 
                         htm += "font-weight:bold;";
 
                         htm += "text-align:center;";
-
-                        if(track_max){
-                            htm += "letter-spacing:15vw;";
-                        } else {
-                            htm += "letter-spacing:10vw;";
-                        }
 
                         htm += "\">";
 
@@ -182,42 +179,159 @@ public class Tela extends javax.swing.JFrame {
                         
                         if(!orm.Read(x, 0).isBlank()){
                             
-                            htm += "<div style=\"width:100%;height:5%;";
-                            htm += "background-color:darkcyan;margin-top:10%;";
+                            boolean con = orm.Read(x, 0).contains(" - ") || orm.Read(x, 0).contains(" | ");
+                            
+                            htm += "<div style=\"width:100%;height:2%;";
+                            htm += "background-color:darkcyan;";
                             htm += "\"></div>";
-                            htm += "<p style=\"margin-top:10%;";
-                            htm += "font-size:calc(10px + 3vw);";
-                            htm += "text-align:center;color:white;";
-                            htm += "font-weight:900;\">";
-                            htm += Registro.Select(orm.Read(x, 0),25);
-                            htm += "</p>";
+                            
+                            if(con){
+                                
+                                String done[] = orm.Read(x, 0).split(" - ");
+                                
+                                List<String> dol = new ArrayList<>();
+                                
+                                for(String ed : done){
+                                    
+                                    if(ed.contains(" | ")){
+                                        
+                                        String dote[] = ed.split(" ");
+                                        
+                                        boolean cmd = false;
+                                        
+                                        String inst = "";
+                                        
+                                        for(String insert : dote){
+                                            
+                                            if(insert.contentEquals("|")){
+                                                
+                                                dol.add(inst);
+                                                
+                                                inst = "";
+                                                cmd = false;
+                                                
+                                            } else {//if(insert.contentEquals("|"))
+                                                
+                                                if(cmd){
+                                                    inst += " ";
+                                                } else {
+                                                    cmd = true;
+                                                }
+                                                
+                                                inst += insert;
+                                                
+                                            }//if(insert.contentEquals("|"))
+                                            
+                                        }//for(String insert : dote)
+                                        
+                                    } else {
+                                        dol.add(ed);
+                                    }
+                                    
+                                }//for(String ed : done)
+                                
+                                boolean apg = false;
+                                
+                                for(String ng : dol){
+                                    
+                                    Data d_html = new Data(ng);
+                                    
+                                    htm += "<p style=\"margin-top:";
+                                    
+                                    if(apg){
+                                        htm += "2";
+                                    } else {
+                                        htm += "5";
+                                    }
+                                    
+                                    htm += "%;";
+                                    
+                                    if(d_html.Val()){
+                                        
+                                        htm += "font-size:3vw;";
+                                        htm += "text-align:center;color:white;";
+                                        htm += "font-weight:bold;\">";
+                                        htm += d_html.DataCompleta(true);
+                                        htm += "</p>";
+                                        
+                                    } else {//if(d_html.Val())
+                                        
+                                        
+                                        htm += "font-size:calc(5px + 3vw);";
+                                        htm += "text-align:center;color:white;";
+                                        htm += "font-weight:bold;\">";
+                                        htm += ng;
+                                        htm += "</p>";
+                                        
+                                    }//if(d_html.Val())
+                                    
+                                    apg = true;
+                                    
+                                }//for(String ng : dol)
+                                
+                            } else {
+                                
+                                htm += "<p style=\"margin-top:5%;";
+                                htm += "font-size:calc(10px + 1vw);";
+                                htm += "text-align:center;color:white;";
+                                htm += "font-weight:bold;\">";
+                                htm += Registro.Select(orm.Read(x, 0),35);
+                                htm += "</p>";
+                                
+                            }
                             
                         }//if(orm.Read(x, 0).isBlank())
                         
+                        htm += "<div style=\"width:100%;height:2.5%;";
+                        htm += "background-color:darkcyan;margin-top:5%;";
+                        htm += "\"></div>";
+                        
                         if(orm.Read(x, 1).isBlank()){
                             
-                            htm += "<div style=\"width:100%;height:5%;";
-                            htm += "background-color:darkcyan;margin-top:10%;";
-                            htm += "\"></div>";
-                            htm += "<p style=\"margin-top:10%;";
+
+                            htm += "<p style=\"margin-top:5%;";
                             htm += "font-size:4vw;";
                             htm += "color:darkcyan;text-align:center;";
                             htm += "font-weight:normal;\">";
                             htm += "Artista<br/>Desconhecido</p>";
                             
-                        } else {//if(orm.Read(x, 1).isBlank())
+                        } else if(orm.Read(x, 1).contains("&")){
                             
-                            htm += "<div style=\"width:100%;height:5%;";
-                            htm += "background-color:darkcyan;margin-top:10%;";
-                            htm += "\"></div>";
+                            String junt[] = orm.Read(x, 1).split("&");
+                            
+                            boolean apt = false;
+                            
+                            for(String f : junt){
+                                
+                                htm += "<p style=\"margin-top:";
+                                
+                                if(apt){
+                                    htm += "2";
+                                } else {
+                                    htm += "5";
+                                }
+                                
+                                htm += "%;";
+                                htm += "font-size:calc(10px + 1vw);";
+                                htm += "color:white;text-align:center;";
+                                htm += "font-weight:bold;\">";
+                                htm += f.trim();
+                                htm += "</p>";
+                                
+                                apt = true;
+                                
+                            }//for(String f : junt)
+                            
+                        } else {
+                            
                             htm += "<p style=\"margin-top:10%;";
-                            htm += "font-size:calc(10px + 3vw);";
+                            htm += "font-size:calc(10px + 1vw);";
                             htm += "color:white;text-align:center;";
                             htm += "font-weight:bold;\">";
-                            htm += Registro.Title(orm.Read(x, 1),"<br/>");
+                            htm += Registro.Select(orm.Read(x, 1),40);
                             htm += "</p>";
                             
-                        }//if(orm.Read(x, 1).isBlank())
+                        }
                         
                         htm += "<div style=\"width:100%;height:5%;";
                         htm += "background-color:darkcyan;margin-top:10%;";
@@ -229,7 +343,7 @@ public class Tela extends javax.swing.JFrame {
                         
                         Numero temp_track = new Numero(orm.Read(x, 6));
                         
-                        Hora temp = new Hora(temp_track.Num(), false);
+                        Hora temp = new Hora(temp_track.Num());
                         
                         htm += temp.getNodeHora(true);
                         
@@ -283,6 +397,16 @@ public class Tela extends javax.swing.JFrame {
                     
                     if(track.Num() > 0 && track.Num() < 1000){
                         
+                        htm += "Faixa ";
+                        
+                        htm += Number(track.Num(),max_track);
+                        
+                        htm += ";";
+                        
+                        htm += orm.Read(i, 10);
+
+                    } else {//if(track.Num() > 0 && track.Num() < 1000)
+                        
                         int arq_local;
                         
                         if(orm.Read(i, 10).contains(".")){
@@ -291,17 +415,7 @@ public class Tela extends javax.swing.JFrame {
                             arq_local = orm.Read(i, 10).length();
                         }
                         
-                        htm += "Faixa ";
-                        
-                        htm += Number(track.Num(),max_track);
-                        
-                        htm += ";";
-                        
                         htm += orm.Read(i, 10).substring(0, arq_local);
-
-                    } else {//if(track.Num() > 0 && track.Num() < 1000)
-                        
-                        htm += orm.Read(i, 10);
                         
                     }//if(track.Num() > 0 && track.Num() < 1000)
                     
@@ -338,7 +452,7 @@ public class Tela extends javax.swing.JFrame {
                     
                     Numero number_track = new Numero(orm.Read(i, 6));
                     
-                    Hora duraction_track = new Hora(number_track.Num(), false);
+                    Hora duraction_track = new Hora(number_track.Num());
                     
                     if(number_track.Val() && number_track.Num() > 0){
                         
