@@ -73,6 +73,12 @@ public class Hora {
         int minute = round(timer/60);
         int hour = round(timer/(60*60));
         
+        if(minute >= 60){
+            
+            minute = hour % 60;
+            
+        }//if(minute >= 60)
+        
         this.hora = LocalTime.of(hour, minute, second);
         
     }//Hora(int timer)
