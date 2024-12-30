@@ -7,7 +7,7 @@ package form;
 import file.*;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -474,9 +474,13 @@ public class Tela extends javax.swing.JFrame {
                             
                         }//if(orn.Val())
                         
-                        htm += ";";
+                    } else {//if(orm.Read(i, 0).isBlank())
+                        
+                        htm += orm.Read(i, 0).isBlank();
                         
                     }//if(orm.Read(i, 0).isBlank())
+                    
+                    htm += ";";
                     
                     // orm.Read(i, 1) -- Artista
 
