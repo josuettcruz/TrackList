@@ -476,7 +476,7 @@ public class Tela extends javax.swing.JFrame {
                         
                     } else {//if(orm.Read(i, 0).isBlank())
                         
-                        htm += orm.Read(i, 0).isBlank();
+                        htm += orm.Read(i, 0);
                         
                     }//if(orm.Read(i, 0).isBlank())
                     
@@ -514,8 +514,6 @@ public class Tela extends javax.swing.JFrame {
                     }
                     
                 }//for(int i = 0; i < orm.Tot(); i++)
-                
-                htm += "\n";
                 
             }//if(orm.Tot() >= 0) - 2
             
