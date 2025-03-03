@@ -77,7 +77,7 @@ public class Tela extends javax.swing.JFrame {
             htm += name;
             htm += "</title>\n";
             htm += "<meta charset=\"utf-8\" />\n";
-            htm += "<link rel=\"icon\" href=\"C:\\Users\\josue\\Pictures\\ícones\\ico-2012210816-html_5.ico\" type=\"image/x-icon\" />\n";
+            htm += "<!--<link rel=\"icon\" href=\"pasta\\arquivo.ico\" type=\"image/x-icon\">-->\n";
             htm += "</head>\n";
             htm += "<body style=\"background-color:black;\">\n";
             
