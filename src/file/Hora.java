@@ -425,10 +425,6 @@ public class Hora {
         int h = this.hora.getHour();
         int m = this.hora.getMinute();
         
-        if(h < 10){
-            txt += "0";
-        }
-        
         txt += h;
         txt += sep;
         
@@ -472,7 +468,7 @@ public class Hora {
                 txt += "s";
             }
 
-            if(mt == 0){
+            if(mt > 0){
                 txt += " e ";
             }
 

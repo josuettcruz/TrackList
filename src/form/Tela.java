@@ -77,6 +77,7 @@ public class Tela extends javax.swing.JFrame {
             htm += name;
             htm += "</title>\n";
             htm += "<meta charset=\"utf-8\" />\n";
+            htm += "<link rel=\"icon\" href=\"C:\\Users\\josue\\Pictures\\ícones\\ico-2012210816-html_5.ico\" type=\"image/x-icon\" />\n";
             htm += "</head>\n";
             htm += "<body style=\"background-color:black;\">\n";
             
@@ -240,14 +241,14 @@ public class Tela extends javax.swing.JFrame {
                                                     cmd = true;
                                                 }
                                                 
-                                                inst += insert;
+                                                inst += Registro.Select(insert, 50);
                                                 
                                             }//if(insert.contentEquals("|"))
                                             
                                         }//for(String insert : dote)
                                         
                                     } else {
-                                        dol.add(ed);
+                                        dol.add(Registro.Select(ed, 50));
                                     }
                                     
                                 }//for(String ed : done)
@@ -416,9 +417,33 @@ public class Tela extends javax.swing.JFrame {
             
             if(orm.Tot() >= 0){
                 
-                htm += "\n\n<!-- Arquivo \"";
+                htm += "\n\n<!-- ";
+                htm += new Data().DataCompleta(true);
+                htm += " às ";
+                htm += new Hora(true).getNodeHora(true);
+                htm += " -- \n\nArquivo: \"";
+                
                 htm += name;
-                htm += "\" --";
+                
+                htm += ".csv\";";
+                
+                htm += new Data().Load();
+                htm += ";";
+                htm += new Hora(true).Load();
+                htm += ";";
+                
+                if(max_track > 1){
+                    
+                    htm += max_track;
+                    htm += " faixas";
+                    
+                } else {//if(max_track > 1)
+                    
+                    htm += new Data().DataAbreviada(true);
+                    htm += " | ";
+                    htm += new Hora(true).getHora(true);
+                    
+                }//if(max_track > 1)
                 
                 String indo = "";
                 
@@ -430,29 +455,43 @@ public class Tela extends javax.swing.JFrame {
                     
                     Numero track = new Numero(orm.Read(i, 3));
                     
-                    if(track.Num() > 0 && track.Num() < 1000){
+                    if(track.Val() && track.Num() > 0 && track.Num() < 1000){
                         
                         htm += "Faixa ";
                         
                         htm += Number(track.Num(),max_track);
                         
+                        htm += " de ";
+                        
+                        htm += max_track;
+                        
                         htm += ";";
                         
-                        htm += orm.Read(i, 10);
+                    }//if(track.Val() && track.Num() > 0 && track.Num() < 1000)
+                        
+                    int arq_local;
 
-                    } else {//if(track.Num() > 0 && track.Num() < 1000)
-                        
-                        int arq_local;
-                        
-                        if(orm.Read(i, 10).contains(".")){
-                            arq_local = orm.Read(i, 10).indexOf(".");
-                        } else {
-                            arq_local = orm.Read(i, 10).length();
-                        }
-                        
-                        htm += orm.Read(i, 10).substring(0, arq_local);
-                        
-                    }//if(track.Num() > 0 && track.Num() < 1000)
+                    if(orm.Read(i, 10).contains(".")){
+                        arq_local = orm.Read(i, 10).indexOf(".");
+                    } else {
+                        arq_local = orm.Read(i, 10).length();
+                    }
+
+                    if(arq_local < orm.Read(i, 10).length()){
+
+                        switch(orm.Read(i, 10).substring(arq_local+1).toLowerCase()){
+
+                            case "mp3" ->{
+                                htm += orm.Read(i, 10).substring(0,arq_local);
+                            }
+
+                            default ->{
+                                htm += orm.Read(i, 10);
+                            }
+
+                        }//switch(orm.Read(i, 10).substring(arq_local+1).toLowerCase())
+
+                    }//if(arq_local < orm.Read(i, 10).length())
                     
                     htm += ";";
                     
@@ -460,15 +499,35 @@ public class Tela extends javax.swing.JFrame {
 
                     if(orm.Read(i, 0).isBlank()){
                         
+                        // Data e Hora do arquvi Original
+                        
                         String origin[] = orm.Read(i,8).split(" ");
                         
                         Data orn =  new Data(origin[0]);
                         
-                        if(orn.Val()){
+                        Hora or;
+                        
+                        if(origin.length > 1){
+                            or = new Hora(origin[1]);
+                        } else {
+                            or = new Hora(false);
+                        }
+                        
+                        if(orn.Val() || or.Val()){
                             
-                            htm += orn.DataCompleta(true);
+                            if(orn.Val()){htm += orn.DataCompleta(true);}
                             
-                        } else {//if(orn.Val())
+                            if(or.Val()){
+                                
+                                if(orn.Val()){
+                                    htm += ";";
+                                }
+                                
+                                htm += or.getNodeHora(true);
+                                
+                            }//if(or.Val())
+                            
+                        } else {//if(orn.Val() || or.Val())
                             
                             htm += "Sem Título";
                             
@@ -477,6 +536,39 @@ public class Tela extends javax.swing.JFrame {
                     } else {//if(orm.Read(i, 0).isBlank())
                         
                         htm += orm.Read(i, 0);
+                        
+                        /* Data e Hora do arquvi Original **
+                        
+                        htm += ";";
+                        String origin[] = orm.Read(i,8).split(" ");
+                        
+                        Data orn =  new Data(origin[0]);
+                        
+                        Hora or;
+                        
+                        if(origin.length > 1){
+                            or = new Hora(origin[1]);
+                        } else {
+                            or = new Hora(false);
+                        }
+                        
+                        if(orn.Val() || or.Val()){
+                            
+                            boolean lote = false;
+                            
+                            if(orn.Val()){htm += orn.DataCompleta(true);}
+                            
+                            if(or.Val()){
+                                
+                                if(orn.Val()){
+                                    htm += ";";
+                                }
+                                
+                                htm += or.getNodeHora(false);
+                                
+                            }//if(or.Val())
+                            
+                        }/*if(orn.Val() || or.Val())*/
                         
                     }//if(orm.Read(i, 0).isBlank())
                     
@@ -487,19 +579,8 @@ public class Tela extends javax.swing.JFrame {
                     if(!orm.Read(i, 1).isBlank()){
                         
                         htm += orm.Read(i, 1);
-                        htm += ";";
 
                     }//if(!orm.Read(i, 1).isBlank())
-                    
-                    // orm.Read(i, 2) -- Álbum
-
-                    if(!orm.Read(i, 2).isBlank() && !orm.Read(i, 2).equalsIgnoreCase(indo)){
-                        
-                        htm += orm.Read(i, 2);
-                        indo = orm.Read(i, 2);
-                        htm += ";";
-
-                    }//if(!orm.Read(i, 2).isBlank())
                     
                     // orm.Read(i, 6) -- Duração
                     
@@ -509,9 +590,20 @@ public class Tela extends javax.swing.JFrame {
                     
                     if(number_track.Val() && number_track.Num() > 0){
                         
+                        htm += ";";
                         htm += duraction_track.getHora(true);
                         
                     }
+                    
+                    // orm.Read(i, 2) -- Álbum
+
+                    if(!orm.Read(i, 2).isBlank() && !orm.Read(i, 2).equalsIgnoreCase(indo)){
+                        
+                        htm += ";";
+                        htm += orm.Read(i, 2);
+                        indo = orm.Read(i, 2);
+
+                    }//if(!orm.Read(i, 2).isBlank())
                     
                 }//for(int i = 0; i < orm.Tot(); i++)
                 
