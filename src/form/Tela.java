@@ -537,7 +537,7 @@ public class Tela extends javax.swing.JFrame {
                         
                         htm += orm.Read(i, 0);
                         
-                        /* Data e Hora do arquvi Original **
+                        /*Data e Hora do arquvi Original **
                         
                         htm += ";";
                         String origin[] = orm.Read(i,8).split(" ");
@@ -554,9 +554,7 @@ public class Tela extends javax.swing.JFrame {
                         
                         if(orn.Val() || or.Val()){
                             
-                            boolean lote = false;
-                            
-                            if(orn.Val()){htm += orn.DataCompleta(true);}
+                            if(orn.Val()){htm += orn.Load();}
                             
                             if(or.Val()){
                                 
@@ -572,12 +570,11 @@ public class Tela extends javax.swing.JFrame {
                         
                     }//if(orm.Read(i, 0).isBlank())
                     
-                    htm += ";";
-                    
                     // orm.Read(i, 1) -- Artista
 
                     if(!orm.Read(i, 1).isBlank()){
                         
+                        htm += ";";
                         htm += orm.Read(i, 1);
 
                     }//if(!orm.Read(i, 1).isBlank())
