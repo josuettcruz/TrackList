@@ -1,19 +1,19 @@
-### NetBeans Apache IDE 13
+# NetBeans Apache IDE 13
 
 ## Como usar
 
 1. Exportar
 2. csv simple
 
-## TagScanner
+# TagScanner
 
 [TagScanner 6.1.18](https://www.xdlab.ru/en/index.htm)
 
 [TagScanner - Download](https://www.xdlab.ru/en/download.htm)
 
-# Sistema de EXPORTAÇÃO:
+## Sistema de EXPORTAÇÃO:
 
-## Tagscanner export script
+# Tagscanner export script
 
 $file_name TrackList.csv
 $file_notes Raw comma-separated text
