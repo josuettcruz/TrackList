@@ -158,14 +158,13 @@ public class Tela extends javax.swing.JFrame {
                         }//if(x > 0)
 
                         boolean vld = track.Val() && track.Num() > 0;
-                        boolean track_max = vld && track.Num() < 1000;
                             
                         htm += "<p style=\"color:darkcyan;";
 
-                        if(track_max){
-                            htm += "font-size:10vw;";
-                        } else {
+                        if(track.Val() && track.Num() >= 1000){
                             htm += "font-size:8vw;";
+                        } else {
+                            htm += "font-size:10vw;";
                         }
 
                         htm += "font-weight:bold;";
@@ -417,33 +416,37 @@ public class Tela extends javax.swing.JFrame {
             
             if(orm.Tot() >= 0){
                 
-                htm += "\n\n<!-- ";
-                htm += new Data().DataCompleta(true);
-                htm += " às ";
-                htm += new Hora(true).getNodeHora(true);
-                htm += " -- \n\nArquivo: \"";
+                htm += "\n\n<!-- Arquivo: \"";
                 
                 htm += name;
                 
-                htm += ".csv\";";
+                htm += ".csv\" --\n";
                 
-                htm += new Data().Load();
-                htm += ";";
-                htm += new Hora(true).Load();
-                htm += ";";
+                boolean max_track_val = max_track > 0;
                 
-                if(max_track > 1){
+                if(max_track_val){
                     
                     htm += max_track;
-                    htm += " faixas";
+                    htm += " faixa";
+                    
+                    if(max_track > 1){
+                        htm += "s";
+                    }
                     
                 } else {//if(max_track > 1)
                     
-                    htm += new Data().DataAbreviada(true);
-                    htm += " | ";
-                    htm += new Hora(true).getHora(true);
+                    htm += new Data().DataAbreviada(false);
                     
                 }//if(max_track > 1)
+                
+                htm += ";";
+                
+                if(max_track_val){
+                    htm += new Data().Load();
+                } else {
+                    htm += new Hora(true).getNodeHora(false);
+                }
+                
                 
                 String indo = "";
                 
@@ -472,7 +475,7 @@ public class Tela extends javax.swing.JFrame {
                     int arq_local;
 
                     if(orm.Read(i, 10).contains(".")){
-                        arq_local = orm.Read(i, 10).indexOf(".");
+                        arq_local = orm.Read(i, 10).lastIndexOf(".");
                     } else {
                         arq_local = orm.Read(i, 10).length();
                     }
@@ -485,12 +488,42 @@ public class Tela extends javax.swing.JFrame {
                                 htm += orm.Read(i, 10).substring(0,arq_local);
                             }
 
+                            case "m4a" ->{
+                                htm += "MPEG-4 áudio | ";
+                                htm += orm.Read(i, 10).substring(0,arq_local);
+                            }
+
+                            case "mp4" ->{
+                                htm += "MPEG-4 vídeo | ";
+                                htm += orm.Read(i, 10).substring(0,arq_local);
+                            }
+
                             default ->{
-                                htm += orm.Read(i, 10);
+                                htm += "Arquivo: \"";
+                                htm += orm.Read(i, 10).substring(arq_local).toUpperCase();
+                                htm += "\" | ";
+                                htm += orm.Read(i, 10).substring(0,arq_local);
                             }
 
                         }//switch(orm.Read(i, 10).substring(arq_local+1).toLowerCase())
 
+                    } else {//if(arq_local < orm.Read(i, 10).length())
+                        
+                        /*
+                            
+                            Isso nunca, ou quase nunca
+                            poderá acontecer,
+                            se depender do aplicativo:
+                            
+                            TagScanner
+                        
+                            Para gerar o arquivo
+                            CSV
+                            
+                        */
+                        
+                        htm += orm.Read(i, 10);
+                        
                     }//if(arq_local < orm.Read(i, 10).length())
                     
                     htm += ";";
@@ -570,16 +603,16 @@ public class Tela extends javax.swing.JFrame {
                         
                     }//if(orm.Read(i, 0).isBlank())
                     
-                    // orm.Read(i, 1) -- Artista
+                    /* orm.Read(i, 1) -- Artista **/
 
                     if(!orm.Read(i, 1).isBlank()){
                         
                         htm += ";";
                         htm += orm.Read(i, 1);
 
-                    }//if(!orm.Read(i, 1).isBlank())
+                    }/*if(!orm.Read(i, 1).isBlank()) */
                     
-                    // orm.Read(i, 6) -- Duração
+                    /* orm.Read(i, 6) -- Duração **/
                     
                     Numero number_track = new Numero(orm.Read(i, 6));
                     
@@ -590,9 +623,9 @@ public class Tela extends javax.swing.JFrame {
                         htm += ";";
                         htm += duraction_track.getHora(true);
                         
-                    }
+                    }/* orm.Read(i, 6) -- Duração */
                     
-                    // orm.Read(i, 2) -- Álbum
+                    /* orm.Read(i, 2) -- Álbum **/
 
                     if(!orm.Read(i, 2).isBlank() && !orm.Read(i, 2).equalsIgnoreCase(indo)){
                         
@@ -600,7 +633,7 @@ public class Tela extends javax.swing.JFrame {
                         htm += orm.Read(i, 2);
                         indo = orm.Read(i, 2);
 
-                    }//if(!orm.Read(i, 2).isBlank())
+                    }/*if(!orm.Read(i, 2).isBlank()) */
                     
                 }//for(int i = 0; i < orm.Tot(); i++)
                 
